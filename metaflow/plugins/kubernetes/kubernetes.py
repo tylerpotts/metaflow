@@ -153,6 +153,8 @@ class Kubernetes(object):
         service_account=None,
         secrets=None,
         node_selector=None,
+        labels=None,
+        annotations=None,
         namespace=None,
         cpu=None,
         gpu=None,
@@ -167,8 +169,6 @@ class Kubernetes(object):
         env=None,
         persistent_volume_claims=None,
         tolerations=None,
-        labels=None,
-        annotations=None,
     ):
         if env is None:
             env = {}
@@ -282,22 +282,7 @@ class Kubernetes(object):
         for name, value in env.items():
             job.environment_variable(name, value)
 
-        annotations = self._get_annotations(annotations)
-        annotations.update(
-            {
-                "metaflow/user": user,
-                "metaflow/flow_name": flow_name,
-            }
-        )
-
-        if current.get("project_name"):
-            annotations.update(
-                {
-                    "metaflow/project_name": current.project_name,
-                    "metaflow/branch_name": current.branch_name,
-                    "metaflow/project_flow_name": current.project_flow_name,
-                }
-            )
+        annotations = self._get_annotations(user, flow_name, current, annotations)
 
         for name, value in annotations.items():
             job.annotation(name, value)
@@ -417,14 +402,31 @@ class Kubernetes(object):
         return labels
 
     @staticmethod
-    def _get_annotations(extra_annotations=None):
+    def _get_annotations(user, flow_name, current, extra_annotations=None):
         if extra_annotations is None:
             extra_annotations = {}
+
         env_annotations = (
             KUBERNETES_ANNOTATIONS.split(",") if KUBERNETES_ANNOTATIONS else []
         )
         env_annotations = parse_kube_keyvalue_list(env_annotations, False)
         annotations = {**env_annotations, **extra_annotations}
+
+        annotations.update(
+            {
+                "metaflow/user": user,
+                "metaflow/flow_name": flow_name,
+            }
+        )
+
+        if current.get("project_name"):
+            annotations.update(
+                {
+                    "metaflow/project_name": current.project_name,
+                    "metaflow/branch_name": current.branch_name,
+                    "metaflow/project_flow_name": current.project_flow_name,
+                }
+            )
         validate_kube_labels_or_annotations(annotations)
         return annotations
 
