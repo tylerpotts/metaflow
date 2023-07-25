@@ -4,6 +4,7 @@ import os
 import re
 import shlex
 import time
+from datetime import datetime
 from typing import Dict, List, Optional
 
 from metaflow import current, util
@@ -334,9 +335,9 @@ class Kubernetes(object):
             )
             t = time.time()
             start_time = time.time()
-            echo(f"Entering is_waiting loop {time.time()}")
+            echo(f"Entering is_waiting loop {datetime.utcnow()}")
             while job.is_waiting:
-                echo(f"Loop start {time.time()}")
+                echo(f"Loop start {datetime.utcnow()}")
                 new_status = job.status
                 if status != new_status or (time.time() - t) > 30:
                     status = new_status
@@ -348,7 +349,7 @@ class Kubernetes(object):
                     t = time.time()
                 time.sleep(update_delay(time.time() - start_time))
                 echo(f"Loop end {time.time()}")
-            echo(f"Completed is_waiting loop {time.time()}")
+            echo(f"Completed is_waiting loop {datetime.utcnow()}")
 
         prefix = b"[%s] " % util.to_bytes(self._job.id)
 
@@ -356,12 +357,12 @@ class Kubernetes(object):
         stderr_tail = get_log_tailer(stderr_location, self._datastore.TYPE)
 
         # 1) Loop until the job has started
-        echo(f"Before wait_for_launch {time.time()}")
+        echo(f"Before wait_for_launch {datetime.utcnow()}")
         wait_for_launch(self._job)
-        echo(f"After wait_for_launch {time.time()}")
+        echo(f"After wait_for_launch {datetime.utcnow()}")
 
         # 2) Tail logs until the job has finished
-        echo(f"Before tail_logs {time.time()}")
+        echo(f"Before tail_logs {datetime.utcnow()}")
         tail_logs(
             prefix=prefix,
             stdout_tail=stdout_tail,
@@ -369,7 +370,7 @@ class Kubernetes(object):
             echo=echo,
             has_log_updates=lambda: self._job.is_running,
         )
-        echo(f"After tail_logs {time.time()}")
+        echo(f"After tail_logs {datetime.utcnow()}")
         # 3) Fetch remaining logs
         #
         # It is possible that we exit the loop above before all logs have been
@@ -381,7 +382,7 @@ class Kubernetes(object):
         #        truncated logs if it doesn't.
         # TODO : For hard crashes, we can fetch logs from the pod.
 
-        echo(f"Before exit disposition {time.time()}")
+        echo(f"Before exit disposition {datetime.utcnow()}")
         if self._job.has_failed:
             exit_code, reason = self._job.reason
             msg = next(
@@ -410,7 +411,7 @@ class Kubernetes(object):
             )
 
         exit_code, _ = self._job.reason
-        echo(f"After exit disposition {time.time()}")
+        echo(f"After exit disposition {datetime.utcnow()}")
         echo(
             "Task finished with exit code %s." % exit_code,
             "stderr",

@@ -1,5 +1,6 @@
 import math
 import time
+from datetime import date, datetime
 
 from .mflog import refine, set_should_persist
 
@@ -126,10 +127,13 @@ def tail_logs(prefix, stdout_tail, stderr_tail, echo, has_log_updates):
                 "stderr",
             )
 
+    echo(f"Starting tail_logs {datetime.utcnow()}")
     start_time = time.time()
     next_log_update = start_time
     log_update_delay = 1
+    echo(f"Before has_log_updates {datetime.utcnow()}")
     while has_log_updates():
+        echo(f" Start loop {datetime.utcnow()}")
         if time.time() > next_log_update:
             _available_logs(stdout_tail, "stdout", echo)
             _available_logs(stderr_tail, "stderr", echo)
@@ -141,10 +145,14 @@ def tail_logs(prefix, stdout_tail, stderr_tail, echo, has_log_updates):
         # we should exit this loop when the task has finished without
         # a long delay, regardless of the log tailing schedule
         time.sleep(min(log_update_delay, 5.0))
+        echo(f" End loop {datetime.utcnow()}")
+
     # It is possible that we exit the loop above before all logs have been
     # tailed.
+    echo(f"After has_log_updates {datetime.utcnow()}")
     _available_logs(stdout_tail, "stdout", echo)
     _available_logs(stderr_tail, "stderr", echo)
+    echo(f"Finished tail_logs {datetime.utcnow()}")
 
 
 def get_log_tailer(log_url, datastore_type):
