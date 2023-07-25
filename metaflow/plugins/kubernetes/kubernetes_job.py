@@ -323,7 +323,6 @@ class KubernetesJob(object):
 
 
 class RunningJob(object):
-
     # State Machine implementation for the lifecycle behavior documented in
     # https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/
     #
@@ -443,7 +442,6 @@ class RunningJob(object):
         client = self._client.get()
         if not self.is_done:
             if self.is_running:
-
                 # Case 1.
                 from kubernetes.stream import stream
 
@@ -663,10 +661,13 @@ class RunningJob(object):
     @property
     def is_running(self):
         # Returns true if the container is running.
-        if self.is_done:
+        is_done = self.is_done
+        are_pod_containers_done = self._are_pod_containers_done
+        print(f"   {is_done=} {are_pod_containers_done=}")
+        if is_done:
             return False
 
-        return not self._are_pod_containers_done
+        return not are_pod_containers_done
 
     @property
     def is_waiting(self):
