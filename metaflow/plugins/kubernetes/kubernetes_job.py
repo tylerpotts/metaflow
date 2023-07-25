@@ -518,6 +518,10 @@ class RunningJob(object):
             # Either the container succeeds or fails naturally or else we may have
             # forced the pod termination causing the job to still be in an
             # active state but for all intents and purposes dead to us.
+            succeeded = bool(self._job["status"].get("succeeded"))
+            failed = bool(self._job["status"].get("failed"))
+            parallelism = self._job["spec"]["parallelism"]
+            print(f"      ID: {succeeded=} {failed=} {parallelism=}")
             return (
                 bool(self._job["status"].get("succeeded"))
                 or bool(self._job["status"].get("failed"))
@@ -640,6 +644,7 @@ class RunningJob(object):
         # finishedAt set.
         container_statuses = self._pod.get("status", {}).get("container_statuses", [])
         if not container_statuses:
+            print(f"      APCD: {container_statuses=}")
             return False
 
         for cstatus in container_statuses:
@@ -647,15 +652,19 @@ class RunningJob(object):
             # to determine if any container failed.
             terminated = cstatus.get("state", {}).get("terminated", {})
             if not terminated:
+                print(f"      APCD: {terminated=}")
                 return False
 
             # If the terminated field is set but the `finished_at` field is not set,
             # the pod is still considered as running.
             if not terminated.get("finished_at"):
+                finished_at = terminated.get("finished_at")
+                print(f"      APCD: {finished_at=}")
                 return False
 
         # If we got until here, the containers were marked terminated and their
         # finishedAt was set.
+        print(f"      APCD: True")
         return True
 
     @property
