@@ -652,7 +652,7 @@ class RunningJob(object):
             # to determine if any container failed.
             terminated = cstatus.get("state", {}).get("terminated", {})
             if not terminated:
-                print(f"      APCD: {terminated=}")
+                print(f"      APCD: {cstatus.get('state')=}")
                 return False
 
             # If the terminated field is set but the `finished_at` field is not set,
