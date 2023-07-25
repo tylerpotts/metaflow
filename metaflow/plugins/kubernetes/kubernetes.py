@@ -337,7 +337,7 @@ class Kubernetes(object):
             start_time = time.time()
             echo(f"Entering is_waiting loop {datetime.utcnow()}")
             while job.is_waiting:
-                echo(f"Loop start {datetime.utcnow()}")
+                # echo(f"Loop start {datetime.utcnow()}")
                 new_status = job.status
                 if status != new_status or (time.time() - t) > 30:
                     status = new_status
@@ -348,7 +348,7 @@ class Kubernetes(object):
                     )
                     t = time.time()
                 time.sleep(update_delay(time.time() - start_time))
-                echo(f"Loop end {time.time()}")
+                # echo(f"Loop end {time.time()}")
             echo(f"Completed is_waiting loop {datetime.utcnow()}")
 
         prefix = b"[%s] " % util.to_bytes(self._job.id)
