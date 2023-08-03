@@ -2,6 +2,7 @@ import json
 import os
 import shutil
 import sys
+from datetime import datetime
 
 from metaflow.exception import MetaflowException
 from metaflow.metaflow_config import DATASTORE_LOCAL_DIR
@@ -12,9 +13,13 @@ from . import CONDA_MAGIC_FILE, get_conda_package_root
 
 
 def bootstrap_environment(flow_name, env_id, datastore_type):
+    print(f"  Setting up conda manifest {datetime.utcnow()}")
     setup_conda_manifest(flow_name)
+    print(f"  Downloading packages {datetime.utcnow()}")
     packages = download_conda_packages(flow_name, env_id, datastore_type)
+    print(f"  Installing conda env {datetime.utcnow()}")
     install_conda_environment(env_id, packages)
+    print(f"  Done {datetime.utcnow()}")
 
 
 def setup_conda_manifest(flow_name):
