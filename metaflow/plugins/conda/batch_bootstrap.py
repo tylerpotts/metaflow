@@ -95,7 +95,7 @@ def install_conda_environment(env_id, packages):
         export PATH=$PATH:$HOME/miniforge3/bin; fi",
         "cd {0}".format(os.path.join(os.getcwd(), "pkgs")),
         "echo starting conda create; date;",
-        "conda create --yes --no-default-packages -p {0} --no-deps {1} >/dev/null 2>&1".format(
+        "conda create --yes --offline --no-default-packages -p {0} --no-deps {1} >/dev/null".format(
             os.path.join(os.getcwd(), env_id), " ".join(packages)
         ),
         "echo finished conda create; date;",
