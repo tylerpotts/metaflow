@@ -86,13 +86,19 @@ def download_conda_packages(flow_name, env_id, datastore_type):
 
 def install_conda_environment(env_id, packages):
     args = [
-        "if ! type conda  >/dev/null 2>&1; \
-            then wget --no-check-certificate https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O Miniforge3.sh >/dev/null 2>&1; \
-            bash ./Miniforge3.sh -b >/dev/null 2>&1; export PATH=$PATH:$HOME/miniforge3/bin; fi",
+        "if ! type conda  >/dev/null; \
+        date; \
+            then wget --no-check-certificate https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O Miniforge3.sh; \
+        date;   \
+        bash ./Miniforge3.sh -b; \
+        echo installed miniforge; \
+        date; \
+        export PATH=$PATH:$HOME/miniforge3/bin; fi",
         "cd {0}".format(os.path.join(os.getcwd(), "pkgs")),
-        "conda create --yes --no-default-packages -p {0} --no-deps {1} >/dev/null 2>&1".format(
+        "conda create --yes --no-default-packages -p {0} --no-deps {1}".format(
             os.path.join(os.getcwd(), env_id), " ".join(packages)
         ),
+        "echo finished conda create; date",
         "cd {0}".format(os.getcwd()),
     ]
     if ENV_ESCAPE_PY is not None:
