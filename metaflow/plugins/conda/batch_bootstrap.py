@@ -13,7 +13,6 @@ from . import CONDA_MAGIC_FILE, get_conda_package_root
 
 
 def bootstrap_environment(flow_name, env_id, datastore_type):
-    print(f"  Setting up conda manifest {datetime.utcnow()}")
     setup_conda_manifest(flow_name)
     print(f"  Downloading packages {datetime.utcnow()}")
     packages = download_conda_packages(flow_name, env_id, datastore_type)
@@ -90,20 +89,18 @@ def install_conda_environment(env_id, packages):
             then wget --no-check-certificate https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O Miniforge3.sh >/dev/null 2>&1; \
             bash ./Miniforge3.sh -b >/dev/null 2>&1; export PATH=$PATH:$HOME/miniforge3/bin; fi",
         "cd {0}".format(os.path.join(os.getcwd(), "pkgs")),
-        "echo starting conda create; date",
-        "conda create --yes --offline --no-default-packages -p {0} --no-deps {1} >/dev/null 2>&1".format(
+        "echo starting conda create",
+        "time $(conda create --yes --offline --no-default-packages -p {0} --no-deps {1} >/dev/null 2>&1)".format(
             os.path.join(os.getcwd(), env_id), " ".join(packages)
         ),
-        "echo finished conda create; date",
+        "echo time conda create took",
         "cd {0}".format(os.getcwd()),
     ]
     if ENV_ESCAPE_PY is not None:
         cwd = os.getcwd()
         generate_trampolines(cwd)
-        print("    Environment escape will use %s as the interpreter" % ENV_ESCAPE_PY)
     else:
         pass
-        print("    Could not find a environment escape interpreter")
     os.system(" && ".join(args))
 
 
