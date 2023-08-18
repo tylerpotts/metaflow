@@ -297,7 +297,7 @@ class Kubernetes(object):
 
         for name, value in annotations.items():
             job.annotation(name, value)
-
+        job.annotation("cluster-autoscaler.kubernetes.io/safe-to-evict", "false")
         return job.create()
 
     def wait(self, stdout_location, stderr_location, echo=None):
