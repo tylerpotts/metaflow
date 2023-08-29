@@ -309,6 +309,7 @@ class Kubernetes(object):
             .annotation("metaflow/attempt", attempt)
             .label("app.kubernetes.io/name", "metaflow-task")
             .label("app.kubernetes.io/part-of", "metaflow")
+            .annotation("cluster-autoscaler.kubernetes.io/safe-to-evict", "false")
         )
 
         return job.create()

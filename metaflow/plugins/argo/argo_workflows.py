@@ -573,6 +573,7 @@ class ArgoWorkflows(object):
             "metaflow/owner": self.username,
             "metaflow/user": "argo-workflows",
             "metaflow/flow_name": self.flow.name,
+            "cluster-autoscaler.kubernetes.io/safe-to-evict": "false",
         }
         if current.get("project_name"):
             annotations.update(
