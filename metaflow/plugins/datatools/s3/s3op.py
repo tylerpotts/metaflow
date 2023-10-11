@@ -361,7 +361,7 @@ def start_workers(mode, urls, num_workers, inject_failure, s3config):
     # 3. start processes
     with TempDir() as output_dir:
         from metaflow.plugins.datatools.s3.s3util import get_s3_client
-        print("inside this thing")
+        print("inside2 this thing")
         s3, client_error = get_s3_client(
             s3_role_arn=s3config.role,
             s3_session_vars=s3config.session_vars,
