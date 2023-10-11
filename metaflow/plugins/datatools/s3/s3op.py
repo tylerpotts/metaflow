@@ -367,7 +367,8 @@ def start_workers(mode, urls, num_workers, inject_failure, s3config):
             s3_session_vars=s3config.session_vars,
             s3_client_params=s3config.client_params,
         )
-        exit(f"seconds is: {s3.get_credentials()._seconds_remaining()}", "111")
+
+        exit(f"seconds is: {type(s3)}", "111")
         for i in range(num_workers):
             file_path = os.path.join(output_dir, str(i))
             p = Process(
