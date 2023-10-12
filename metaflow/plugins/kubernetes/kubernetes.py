@@ -171,11 +171,13 @@ class Kubernetes(object):
     ):
         if env is None:
             env = {}
+        import uuid
+        myuuid = uuid.uuid4()
 
         job = (
             KubernetesClient()
             .job(
-                generate_name="t-",
+                generate_name=myuuid,
                 namespace=namespace,
                 service_account=service_account,
                 secrets=secrets,
