@@ -177,7 +177,7 @@ class Kubernetes(object):
         job = (
             KubernetesClient()
             .job(
-                generate_name=myuuid,
+                generate_name="t-{uid}".format(uid=str(myuuid)),
                 namespace=namespace,
                 service_account=service_account,
                 secrets=secrets,
