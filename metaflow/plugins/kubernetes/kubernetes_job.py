@@ -255,6 +255,7 @@ class KubernetesJob(object):
             #       achieve the guarantees that we are seeking.
             #       https://github.com/kubernetes/enhancements/issues/1040
             #       Hopefully, we will be able to get creative with kube-batch
+            import pdb; pdb.set_trace()
             response = (
                 client.BatchV1Api()
                 .create_namespaced_job(
