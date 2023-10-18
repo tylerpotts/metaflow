@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = "2.9.11_oct18"
+version = "4.0.1"
 
 setup(
     include_package_data=True,
