@@ -403,6 +403,8 @@ class Kubernetes(object):
                 "%s. This could be a transient error. Use @retry to retry." % msg
             )
 
+        exit_code, _ = self._job.reason
+
         if int(exit_code) == 137:
             raise KubernetesException(
                 "Task ran out of memory. "
@@ -410,7 +412,6 @@ class Kubernetes(object):
                 "@resource(memory=...) for the step. "
             )
 
-        exit_code, _ = self._job.reason
         echo(
             "Task finished with exit code %s." % exit_code,
             "stderr",
