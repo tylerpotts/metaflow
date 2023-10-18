@@ -174,7 +174,7 @@ def step(
         ctx.obj.echo_always(
             "Sleeping %d minutes before the next retry" % minutes_between_retries
         )
-        time.sleep(minutes_between_retries * 60)
+        time.sleep(1)
 
     step_cli = "{entrypoint} {top_args} step {step} {step_args}".format(
         entrypoint="%s -u %s" % (executable, os.path.basename(sys.argv[0])),
