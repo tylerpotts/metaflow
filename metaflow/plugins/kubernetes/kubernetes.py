@@ -172,6 +172,7 @@ class Kubernetes(object):
         if env is None:
             env = {}
         import uuid
+
         myuuid = uuid.uuid4()
 
         job = (
@@ -400,6 +401,13 @@ class Kubernetes(object):
                     msg = "%s (exit code %s)" % (msg, exit_code)
             raise KubernetesException(
                 "%s. This could be a transient error. Use @retry to retry." % msg
+            )
+
+        if int(exit_code) == 137:
+            raise KubernetesException(
+                "Task ran out of memory. "
+                "Increase the available memory by specifying "
+                "@resource(memory=...) for the step. "
             )
 
         exit_code, _ = self._job.reason
